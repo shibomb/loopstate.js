@@ -1,6 +1,6 @@
 # Loop State
 
-repeat between min valu and max value as seesaw.
+repeat between min value and max value as seesaw.
 
 ## LoopState Class
 abstract class.
