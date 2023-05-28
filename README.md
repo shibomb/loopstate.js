@@ -14,6 +14,7 @@ Repeat between min value and max value as seesaw.
 ```javascript
 constructor(min, max, move, onMin, onMax, options = {})
 ```
+
 ### args
 
 | name | what | default |
@@ -26,6 +27,7 @@ constructor(min, max, move, onMin, onMax, options = {})
 | options | Options | {} |
 
 ### options
+
 | key | what | default |
 | -- | -- | -- |
 | default | start value | args.min |
