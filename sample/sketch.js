@@ -1,65 +1,86 @@
-class MyObject {
-  constructor(props) {
-    this.props = props;
-    this.r = 0;
-
-    this.n = new StepLoopState(3, 12, 1);
-
-    this.state = new LerpLoopState(1, 2, 0.1, () => {
-      this.n.update();
-    });
-  }
-
-  update() {
-    // this.r = this.r + deltaTime * 0.01;
-
-    this.state.update();
-  }
-
-  display() {
-    push();
-
-    translate(this.props.x, this.props.y);
-    rotate(radians(this.r));
-
-    noStroke();
-    fill(255);
-
-    beginShape();
-    const r = this.props.size;
-
-    const step = 360 / this.n.now;
-
-    for (let d = 0 + 90; d < 360 + 90; d += step) {
-      const rad = radians(d);
-      const radIn = radians(d + step / 2);
-      vertex(r * cos(rad), r * -sin(rad));
-      vertex(
-        (r / this.state.now) * cos(radIn),
-        (r / this.state.now) * -sin(radIn)
-      );
-    }
-    endShape();
-
-    pop();
-  }
-}
-
 let objs = [];
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  objs.push(new MyObject({ x: width / 2, y: height / 2, size: 100 }));
+  const ST = 100;
+  const ED = width - 100;
+
+  const onMin = (obj) => {
+    console.log(`${obj.constructor.name} ${obj.loopMode}:min`);
+  };
+  const onMax = (obj) => {
+    console.log(`${obj.constructor.name} ${obj.loopMode}:max`);
+  };
+
+  // examples
+
+  objs.push(new StepLoopState(ST, ED, 1, onMin, onMax));
+
+  objs.push(new LerpLoopState(ST, ED, 0.1, onMin, onMax));
+
+  objs.push(new LinerLoopState(ST, ED, 0.01, onMin, onMax, { wait: 500 }));
+  objs.push(
+    new LinerLoopState(ST, ED, 0.01, onMin, onMax, {
+      wait: 500,
+      loopMode: "restart",
+    })
+  );
+  objs.push(
+    new LinerLoopState(ST, ED, 0.01, onMin, onMax, {
+      wait: 500,
+      loopMode: "none",
+    })
+  );
+
+  objs.push(
+    new EaseInCircLoopState(ST, ED, 0.01, onMin, onMax, {
+      wait: 1000,
+    })
+  );
+
+  objs.push(
+    new EaseOutCircLoopState(ST, ED, 0.01, onMin, onMax, {
+      wait: 1500,
+    })
+  );
+
+  objs.push(
+    new EaseInOutCircLoopState(ST, ED, 0.01, onMin, onMax, {
+      wait: 2000,
+    })
+  );
 }
 
 function draw() {
   background(0);
 
-  for (const obj of objs) {
-    obj.update();
-  }
+  // guidance
+  stroke("red");
+  line(100, 0, 100, height);
+  line(width - 100, 0, width - 100, height);
 
-  for (const obj of objs) {
-    obj.display();
+  // examples
+  const step = (height - 200) / objs.length;
+  for (let i = 0; i < objs.length; i++) {
+    const obj = objs[i];
+
+    obj.update();
+
+    // display
+    stroke(0);
+    fill(255);
+    circle(obj.now, i * step + 100, 10);
+
+    // info
+    stroke(0);
+    fill(255);
+    text(
+      `${obj.constructor.name} : ${obj.move} : ${obj.loopMode}`,
+      10,
+      i * step + 90
+    );
+    text(`${~~(obj.progress * 100)}%`, 10, i * step + 110);
+    text(`x=${~~obj.now}`, width - 90, i * step + 90);
   }
 }
