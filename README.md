@@ -22,8 +22,8 @@ constructor(min, max, move, onMin, onMax, options = {})
 | min | Min value | - |
 | max | Max value | - |
 | move | Move | - |
-| onMin | Callback function on min | undefined |
-| onMin | Callback function on max | undefined |
+| onMin | Callback function on min. the 1st param is this loop state instance. e.g. (obj) => {} | undefined |
+| onMin | Callback function on max. the 1st param is this loop state instance. e.g. (obj) => {} | undefined |
 | options | Options | {} |
 
 ### options
